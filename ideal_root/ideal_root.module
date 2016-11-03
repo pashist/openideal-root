@@ -1,0 +1,39 @@
+<?php
+
+error_reporting(E_ALL ^ E_NOTICE);
+
+define('IDEAL_ROOT_URL', variable_get('ideal_root_url'));
+define('IDEAL_ROOT_USER', variable_get('ideal_root_user'));
+define('IDEAL_ROOT_PASSWORD', variable_get('ideal_root_password'));
+define('IDEAL_ROOT_NODE_TYPE', 'idea');
+define('IDEAL_ROOT_MODULE_SLUG', 'ideal_root');
+
+function ideal_root_init()
+{
+
+}
+
+function ideal_root_menu()
+{
+
+    $items['admin/config/ideal_root'] = array(
+        'title' => 'Ideal Root configuration',
+        'description' => 'Ideal Root settings link',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('ideal_root_config_form'),
+        'access arguments' => array('administer site configuration'),
+        'file' => 'ideal_root.admin.inc',
+    );
+
+    return $items;
+}
+
+function ideal_root_node_insert($node)
+{
+    if ($node->type == IDEAL_ROOT_NODE_TYPE) {
+        $api = new IdealRootApi(IDEAL_ROOT_URL, IDEAL_ROOT_USER, IDEAL_ROOT_PASSWORD);
+        $api->init();
+        $task = IdealRootTask::createFromIdea($node);
+        $api->saveTask($task);
+    }
+}
