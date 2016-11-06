@@ -34,8 +34,8 @@ class IdealRootTask
     {
         $instance = new self;
         $instance->title = "Task for idea #$idea->nid";
+        $instance->description = url('node/' . $idea->nid, array('absolute' => true));
         $instance->customData = $idea;
-
         return $instance;
     }
 }

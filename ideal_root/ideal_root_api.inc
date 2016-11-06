@@ -52,7 +52,7 @@ class IdealRootApi
         $path = '/tasks';
         $data = (array) $task;
         $result = $this->request($path, $data);
-        $result && $this->log('Task created: $task', array('$task' => print_r($result, 1)), WATCHDOG_INFO);
+        $result && $this->log('Task created: <pre>$task</pre>', array('$task' => print_r($result, 1)), WATCHDOG_INFO);
         return $result;
     }
 
@@ -98,11 +98,15 @@ class IdealRootApi
         if (is_object($data) && $data->message) {
             $message = $data->message;
         }
-        $this->log('Ideal Root API request: $request', array('$request' => print_r($result, 1)), $code != 200 ? WATCHDOG_ALERT : WATCHDOG_INFO);
+        $this->log(
+            'Ideal Root API request: <pre>$request</pre>',
+            array('$request' => print_r($result, 1)),
+            $code != 200 ? WATCHDOG_ALERT : WATCHDOG_INFO
+        );
     }
 
     protected function log($message, $variables = array(), $severity = WATCHDOG_ALERT)
     {
-        watchdog('ideal_root', $message, $variables, $severity);
+        watchdog(IDEAL_ROOT_MODULE_SLUG, $message, $variables, $severity);
     }
 }
