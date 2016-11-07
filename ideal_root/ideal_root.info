@@ -5,6 +5,6 @@ package = openideaL
 
 version = "7.x-2.7+0-dev"
 project = "idea"
-configure = admin/config/idea/ideal_root
+configure = admin/config/ideal_root
 files[] = ideal_root_task.inc
 files[] = ideal_root_api.inc
