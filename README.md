@@ -8,5 +8,5 @@ Copy `ideal_root` folder in drupal modules directory `sites/all/modules` and act
 ###Settings
 Click on configure link `ideal_root` module in modules list.
 You need to provide root server api url, eg `http://192.168.56.101:3100/api` and username/password or token depends on selected authentication type.
-**Note if you select username/password auth type, then password will be stored in db in not encrypted format.**
+**Note if you select username/password auth, then password will be stored in db in not encrypted format.**
 During submit server connection and credentials will be verified, so make sure they are correct at this moment.
