@@ -23,7 +23,7 @@ class IdealRootApi
 
     public function init()
     {
-        $this->token = $this->getToken();
+        !$this->token && $this->setToken($this->getToken());
         $this->user = $this->getUser();
         return $this;
     }
@@ -36,6 +36,11 @@ class IdealRootApi
         );
         $result = $this->request($path, $data);
         return $result ? $result->token : null;
+    }
+    public function setToken($token)
+    {
+        $this->token = $token;
+        return $this;
     }
 
     public function getUser()
@@ -74,23 +79,24 @@ class IdealRootApi
         if (!is_null($data)) {
             $defaultOptions['data'] = json_encode($data);
         }
+        $url = $this->apiUrl . $path;
         $options = array_merge($defaultOptions, is_array($options) ? $options : array());
         if ($this->token) {
             $options['headers']['Authorization'] = 'Bearer ' . $this->token;
         }
-        $result = drupal_http_request($this->apiUrl . $path, $options);
-        
-        $this->logRequest($result);
+        $result = drupal_http_request($url, $options);
+
+        $this->logRequest($url, $result);
 
         if ($rawResult) {
             return $result;
         }
-      
+
         $data = json_decode($result->data);
         return $result->code == 200 && is_object($data) ? $data : null;
     }
 
-    protected function logRequest($result)
+    protected function logRequest($url, $result)
     {
         $message = $result->error;
         $code = $result->code;
@@ -99,14 +105,14 @@ class IdealRootApi
             $message = $data->message;
         }
         $this->log(
-            'Ideal Root API request: <pre>$request</pre>',
-            array('$request' => print_r($result, 1)),
+            'Ideal Root API request to <strong>$url</strong>: <pre>$request</pre>',
+            array('$request' => print_r($result, 1), '$url' => $url),
             $code != 200 ? WATCHDOG_ALERT : WATCHDOG_INFO
         );
     }
 
     protected function log($message, $variables = array(), $severity = WATCHDOG_ALERT)
     {
-        watchdog(IDEAL_ROOT_MODULE_SLUG, $message, $variables, $severity);
+        watchdog(IR_MODULE_SLUG, $message, $variables, $severity);
     }
 }

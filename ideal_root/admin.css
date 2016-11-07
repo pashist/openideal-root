@@ -1,0 +1,57 @@
+#irLoginForm{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.6);
+    z-index:9998;
+    top:0;
+    left: 0;
+}
+#irLoginForm form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #333;
+    width: 300px;
+    min-height: 200px;
+    height: auto;
+    margin: -100px 0 0 -150px;
+    z-index:9999;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+}
+#irLoginForm .irHideLoginForm {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 4px 8px;
+    margin: 0;
+    font-weight: bold;
+    font-size: 15px;
+    color: #000;
+    text-decoration: none;
+}
+#irLoginForm input {
+    width: 150px;
+    margin: 4px;
+}
+
+#irLoginForm input[type="text"], #irLoginForm input[type="password"] {
+    background: #fefefe;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+}
+#irLoginForm input[disabled] {
+    background: #ddd;
+    color: #999;
+    border-color: #ccc;
+    cursor: default;
+}
+#irLoginForm input[type="submit"] {
+    margin-top: 10px;
+    padding: 6px 15px;
+}
+#irLoginForm .message {
+
+}

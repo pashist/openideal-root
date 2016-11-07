@@ -2,11 +2,16 @@
 
 error_reporting(E_ALL ^ E_NOTICE);
 
-define('IDEAL_ROOT_URL', variable_get('ideal_root_url'));
-define('IDEAL_ROOT_USER', variable_get('ideal_root_user'));
-define('IDEAL_ROOT_PASSWORD', variable_get('ideal_root_password'));
-define('IDEAL_ROOT_NODE_TYPE', 'idea');
-define('IDEAL_ROOT_MODULE_SLUG', 'ideal_root');
+define('IR_NODE_TYPE', 'idea');
+define('IR_MODULE_SLUG', 'ideal_root');
+
+define('IR_API_URL', variable_get('ideal_root_url'));
+define('IR_API_USER', variable_get('ideal_root_user'));
+define('IR_API_PASSWORD', variable_get('ideal_root_password'));
+define('IR_API_TOKEN', variable_get('ideal_root_token'));
+define('IR_AUTH_TYPE_PASSWORD', 1);
+define('IR_AUTH_TYPE_TOKEN', 2);
+define('IR_AUTH_TYPE', variable_get('ideal_root_auth_type') ?: IR_AUTH_TYPE_TOKEN);
 
 function ideal_root_init()
 {
@@ -15,7 +20,6 @@ function ideal_root_init()
 
 function ideal_root_menu()
 {
-
     $items['admin/config/ideal_root'] = array(
         'title' => 'Ideal Root configuration',
         'description' => 'Ideal Root settings link',
@@ -25,15 +29,50 @@ function ideal_root_menu()
         'file' => 'ideal_root.admin.inc',
     );
 
+    $items['admin/config/ideal_root/ajax'] = array(
+        'title' => 'Data',
+        'page callback' => 'ideal_root_remote_ajax',
+        'access arguments' => array('administer site configuration'),
+        'type' => MENU_CALLBACK,
+    );
     return $items;
 }
 
 function ideal_root_node_insert($node)
 {
-    if ($node->type == IDEAL_ROOT_NODE_TYPE) {
-        $api = new IdealRootApi(IDEAL_ROOT_URL, IDEAL_ROOT_USER, IDEAL_ROOT_PASSWORD);
+    if ($node->type == IR_NODE_TYPE) {
+        $api = new IdealRootApi(IR_API_URL, IR_API_USER, IR_API_PASSWORD);
+        if (IR_AUTH_TYPE == IR_AUTH_TYPE_TOKEN) {
+            $api->setToken(IR_API_TOKEN);
+        }
         $api->init();
         $task = IdealRootTask::createFromIdea($node);
         $api->saveTask($task);
     }
+}
+
+/**
+ * ajax requests handler
+ */
+function ideal_root_remote_ajax()
+{
+    $request = (object) $_REQUEST;
+    $action = $request->action;
+    $result = array();
+    try {
+        if ($action == 'get_token') {
+            $url = $request->url;
+            $password = $request->password;
+            $email = $request->email;
+            $api = new IdealRootApi($url, $email, $password);
+            if (!$api->testConnection()) throw new Exception('Connection to API failed');
+            if (!$token = $api->getToken()) throw new Exception('Invalid username/password');
+            $result['token'] = $token;
+        }
+    } catch (Exception $e) {
+        $result['error'] = $e->getMessage();
+        drupal_add_http_header('status', '400 Bad request');
+    }
+    print(json_encode($result));
+    drupal_exit();
 }

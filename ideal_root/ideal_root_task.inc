@@ -38,4 +38,18 @@ class IdealRootTask
         $instance->customData = $idea;
         return $instance;
     }
+
+    protected function formatIdea($node)
+    {
+        $idea = array(
+            'nid' => $node->nid,
+            'uid' => $node->uid,
+            'title' => $node->title,
+            'created' => $node->created,
+            'body' => render($node->body),
+            'status' => $node->status
+        );
+
+        return $idea;
+    }
 }
