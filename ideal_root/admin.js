@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
     var $ = jQuery;
-    var apiUrl = $('[name="ideal_root_url"]').val();
+    var urlInput = $('[name="ideal_root_url"]');
     var tokenInput = $('[name="ideal_root_token"]');
     var popup;
     var form;
@@ -34,7 +34,7 @@ jQuery(document).ready(function(){
             email: formData[0].value,
             password: formData[1].value,
             action: 'get_token',
-            url: apiUrl
+            url: urlInput.val()
         };
         setLoadingState(true);
         $.ajax({
