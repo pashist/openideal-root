@@ -60,7 +60,7 @@ jQuery(document).ready(function(){
         console.log(response);
         var data;
         try {
-            data = JSON.parse(response.response)
+            data = response.responseJSON || JSON.parse(response.responseText)
         } catch (e) {
 
         }

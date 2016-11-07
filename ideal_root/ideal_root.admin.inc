@@ -30,7 +30,7 @@ function ideal_root_config_form($form, &$form_state)
 
     $form['ideal_root_user'] = array(
         '#type' => 'textfield',
-        '#title' => t('Root user'),
+        '#title' => t('Root user email'),
         '#default_value' => IR_API_USER,
         '#states' => array(
             'visible' => array(   // action to take.
@@ -64,7 +64,7 @@ function ideal_root_config_form($form, &$form_state)
             ':input[name="ideal_root_auth_type"]' => array('value' => IR_AUTH_TYPE_TOKEN),
           )
       ),
-      '#field_suffix' => '<a id="irGetTokenBtn" class="button" href="#">get</a>',
+      '#field_suffix' => '<a id="irGetTokenBtn" class="button" href="#">Get Token</a>',
     );
     $form['#attached']['js'] = array(
         drupal_get_path('module', IR_MODULE_SLUG) . '/admin.js',
